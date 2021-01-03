@@ -1,0 +1,25 @@
+.container{
+   height: 450px;
+   position: relative;
+   border-radius: 10px;
+   margin: 30px 30px;
+   background-color: #121212;
+}
+.array-container{
+   white-space: nowrap;
+   margin: auto;
+   max-width: 100%;
+   min-width: 1060px; 
+   min-height: 400px;
+   text-align: center;
+}
+
+
+.array-bar{
+   display: inline-block;
+   width: 3px;
+   margin: 0px 1.01px; 
+   background-color: #FF0099;
+   margin-top: 25px;
+
+}
