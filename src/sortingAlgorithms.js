@@ -60,3 +60,23 @@ function merge(
     mainArray[k++] = auxiliaryArray[j++];
   }
 }
+
+export function bubbleSort(array) {
+  var animations = [];
+  var n = array.length;
+  for (var i = 0; i < n - 1; i++) {
+    for (var j = 0; j < n - i - 1; j++) {
+      if (j === n - i - 2) {
+        animations.push([j, j + 1, true]);
+      } else {
+        animations.push([j, j + 1, false]);
+      }
+      if (array[j] > array[j + 1]) {
+        var temp = array[j];
+        array[j] = array[j + 1];
+        array[j + 1] = temp;
+      }
+    }
+  }
+  return animations;
+}
