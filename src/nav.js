@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import Slider from "./slider.js";
 import Main from "./main";
-import { getMergeSortAnimations, bubbleSort } from "./sortingAlgorithms";
+import {
+  getMergeSortAnimations,
+  bubbleSort,
+  heapSort,
+} from "./sortingAlgorithms";
 import "./nav.css";
 
 const resetArray = () => {
@@ -11,20 +15,24 @@ const resetArray = () => {
     newArr.push(Math.floor(Math.random() * (426 - 1 + 1) + 1));
   }
   return newArr;
-  //return [80, 50, 60, 70, 40, 90, 60, 10, 20];
+  //return [80, 30, 10, 70, 40, 50, 90, 20, 60];
 };
+
 var isRun = false;
 const Nav = () => {
   const [sort, setSort] = useState("merge");
   const [arr, setArray] = useState(resetArray());
   const [speed, setSpeed] = useState(2);
   const [isSorted, setIsSorted] = useState(false);
+
   const handleRun = (e) => {
     if (isRun || isSorted) {
       return;
     }
-    e.target.style.backgroundColor = "green";
-    document.getElementById("slider").style.pointerEvents = "none";
+    if (sort !== "quick") {
+      e.target.style.backgroundColor = "green";
+      document.getElementById("slider").style.pointerEvents = "none";
+    }
     if (sort === "merge") {
       isRun = true;
       const animations = getMergeSortAnimations(arr);
@@ -59,15 +67,10 @@ const Nav = () => {
       var og_arr = arr.slice();
       const animations = bubbleSort(arr);
       const arrayBars = document.getElementsByClassName("array-bar");
-      setTimeout(() => {
-        e.target.style.backgroundColor = "rgb(57, 57, 61)";
-        arrayBars[0].style.backgroundColor = "#BE00FE";
-        isRun = false;
-        document.getElementById("slider").style.pointerEvents = "auto";
-        setIsSorted(true);
-      }, animations.length * speed * 0.3 + speed * 0.3);
+
       for (let i = 0; i < animations.length; i++) {
         const [bar1, bar2, endCheck] = animations[i];
+        // eslint-disable-next-line
         setTimeout(() => {
           const idx = og_arr[bar1] > og_arr[bar2] ? bar1 : bar2;
           arrayBars[idx].style.backgroundColor = "yellow";
@@ -85,18 +88,49 @@ const Nav = () => {
             }
             if (animations.length - 1 === i) {
               arrayBars[0].style.backgroundColor = "#BE00FE";
+              e.target.style.backgroundColor = "rgb(57, 57, 61)";
+              isRun = false;
+              document.getElementById("slider").style.pointerEvents = "auto";
+              setIsSorted(true);
             }
           }, speed * 0.3);
-        }, i * speed * 0.3);
+        }, i * (speed * 0.3));
+      }
+    } else if (sort === "heap") {
+      var animations = heapSort(arr);
+      const arrayBars = document.getElementsByClassName("array-bar");
+      for (let i = 0; i < animations.length; i++) {
+        const [bar1, bar2, isEnd] = animations[i];
+
+        // eslint-disable-next-line
+        setTimeout(() => {
+          arrayBars[bar1].style.backgroundColor = "yellow";
+          arrayBars[bar2].style.backgroundColor = "yellow";
+          setTimeout(() => {
+            var temp = arrayBars[bar1].style.height;
+            arrayBars[bar1].style.height = arrayBars[bar2].style.height;
+            arrayBars[bar2].style.height = temp;
+            arrayBars[bar1].style.backgroundColor = "#FF0099";
+            arrayBars[bar2].style.backgroundColor = isEnd
+              ? "#BE00FE"
+              : "#FF0099";
+
+            if (animations.length - 1 === i) {
+              arrayBars[0].style.backgroundColor = "#BE00FE";
+              e.target.style.backgroundColor = "rgb(57, 57, 61)";
+              isRun = false;
+              document.getElementById("slider").style.pointerEvents = "auto";
+              setIsSorted(true);
+            }
+          }, speed);
+        }, i * speed);
       }
     }
   };
 
   const handleSortChange = (e) => {
-    if (e.target.id !== "merge" && e.target.id !== "bubble") {
-      alert(
-        "ONLY MERGE SORT IS IMPLEMENTED CURRENTLY. Other sorts still being implemented"
-      );
+    if (e.target.id === "quick") {
+      alert("Quick sort is still being implemented");
     }
     if (!isRun) {
       var newSort = e.target.id;

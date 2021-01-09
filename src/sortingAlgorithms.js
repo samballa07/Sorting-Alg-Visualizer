@@ -80,3 +80,47 @@ export function bubbleSort(array) {
   }
   return animations;
 }
+function swap(input, index_A, index_B) {
+  var temp = input[index_A];
+
+  input[index_A] = input[index_B];
+  input[index_B] = temp;
+}
+var array_length;
+
+function heap_root(input, i, animations) {
+  var left = 2 * i + 1;
+  var right = 2 * i + 2;
+  var max = i;
+
+  if (left < array_length && input[left] > input[max]) {
+    max = left;
+  }
+
+  if (right < array_length && input[right] > input[max]) {
+    max = right;
+  }
+  if (max !== i) {
+    animations.push([i, max, false]);
+    swap(input, i, max);
+    heap_root(input, max, animations);
+  }
+}
+
+export function heapSort(input) {
+  var animations = [];
+  array_length = input.length;
+
+  for (var i = Math.floor(array_length / 2); i >= 0; i -= 1) {
+    heap_root(input, i, animations);
+  }
+
+  for (i = input.length - 1; i > 0; i--) {
+    animations.push([0, i, true]);
+    swap(input, 0, i);
+    array_length--;
+
+    heap_root(input, 0, animations);
+  }
+  return animations;
+}
