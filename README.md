@@ -1,3 +1,5 @@
+You will not be able to change speed or randomize while sorting takes place
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
