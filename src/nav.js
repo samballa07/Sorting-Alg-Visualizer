@@ -5,6 +5,7 @@ import {
   getMergeSortAnimations,
   bubbleSort,
   heapSort,
+  quickSort,
 } from "./sortingAlgorithms";
 import "./nav.css";
 
@@ -29,12 +30,11 @@ const Nav = () => {
     if (isRun || isSorted) {
       return;
     }
-    if (sort !== "quick") {
-      e.target.style.backgroundColor = "green";
-      document.getElementById("slider").style.pointerEvents = "none";
-    }
+    e.target.style.backgroundColor = "green";
+    document.getElementById("slider").style.pointerEvents = "none";
+    isRun = true;
+
     if (sort === "merge") {
-      isRun = true;
       const animations = getMergeSortAnimations(arr);
       setTimeout(() => {
         e.target.style.backgroundColor = "rgb(57, 57, 61)";
@@ -63,7 +63,6 @@ const Nav = () => {
         }
       }
     } else if (sort === "bubble") {
-      isRun = true;
       var og_arr = arr.slice();
       const animations = bubbleSort(arr);
       const arrayBars = document.getElementsByClassName("array-bar");
@@ -125,13 +124,37 @@ const Nav = () => {
           }, speed);
         }, i * speed);
       }
+    } else if (sort === "quick") {
+      animations = [];
+      quickSort(arr, 0, arr.length - 1, animations);
+      var arrayBars = document.getElementsByClassName("array-bar");
+      for (let i = 0; i < animations.length; i++) {
+        const [bar1, bar2] = animations[i];
+
+        // eslint-disable-next-line
+        setTimeout(() => {
+          arrayBars[bar1].style.backgroundColor = "yellow";
+          arrayBars[bar2].style.backgroundColor = "yellow";
+          setTimeout(() => {
+            var temp = arrayBars[bar1].style.height;
+            arrayBars[bar1].style.height = arrayBars[bar2].style.height;
+            arrayBars[bar2].style.height = temp;
+            arrayBars[bar1].style.backgroundColor = "#BE00FE";
+            arrayBars[bar2].style.backgroundColor = "#BE00FE";
+
+            if (animations.length - 1 === i) {
+              e.target.style.backgroundColor = "rgb(57, 57, 61)";
+              isRun = false;
+              document.getElementById("slider").style.pointerEvents = "auto";
+              setIsSorted(true);
+            }
+          }, speed * 6);
+        }, i * (speed * 6));
+      }
     }
   };
 
   const handleSortChange = (e) => {
-    if (e.target.id === "quick") {
-      alert("Quick sort is still being implemented");
-    }
     if (!isRun) {
       var newSort = e.target.id;
       if (sort !== newSort) {
